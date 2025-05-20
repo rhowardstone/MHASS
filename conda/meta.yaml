@@ -1,0 +1,60 @@
+{% set name = "mhass" %}
+{% set version = "0.1.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  path: ..
+
+build:
+  number: 0
+  script: {{ PYTHON }} -m pip install . -vv
+  entry_points:
+    - mhass = mhass.main:main
+  skip: true  # [py<36]
+
+requirements:
+  host:
+    - python >=3.6
+    - pip
+    - setuptools >=42
+    - wheel
+  run:
+    - python >=3.6
+    - r-base >=4.0
+    - r-optparse
+    - bioconductor-biostrings
+    - r-remotes
+    - pbsim3
+    - pbccs
+    - tqdm >=4.50.0
+
+test:
+  commands:
+    - mhass --help
+    - which pbsim
+    - which ccs
+    - Rscript -e "library(metaSPARSim)" || echo "Note: metaSPARSim will be installed at runtime if needed"
+  imports:
+    - mhass
+
+about:
+  home: https://github.com/rhowardstone/MHASS
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: 'A complete pipeline for simulating PacBio ccs amplicon data'
+  description: |
+    MHASS (Microbiome HiFi Amplicon Sequencing Simulator) is a 
+    comprehensive tool for simulating PacBio CCS amplicon 
+    sequencing data. It handles the complete workflow from 
+    count matrix simulation through barcode addition, PacBio 
+    read simulation, and final FASTQ output generation.
+  doc_url: https://github.com/rhowardstone/MHASS
+  dev_url: https://github.com/rhowardstone/MHASS
+
+extra:
+  recipe-maintainers:
+    - rhowardstone

@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mhass"
+version = "0.1.0"
+description = "A complete pipeline for simulating PacBio ccs amplicon data"
+readme = "README.md"
+requires-python = ">=3.6"
+license = {text = "MIT"}
+keywords = ["bioinformatics", "simulation", "pacbio", "microbiome"]
+authors = [
+    {name = "Rye Howard-Stone", email = "Rye.Howard-Stone@UConn.edu"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+dependencies = [
+    "tqdm>=4.50.0",
+]
+
+[project.scripts]
+mhass = "mhass.main:main"
+
+[tool.setuptools]
+packages = ["mhass"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+mhass = [
+    "resources/*",
+    "resources/pbsim3/src/pbsim",
+    "resources/pbsim3/data/QSHMM-RSII.model",
+    "get_counts.R",
+]
