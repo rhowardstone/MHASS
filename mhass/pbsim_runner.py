@@ -38,9 +38,16 @@ def run_chunk(chunk_id, fasta_chunk, output_base, pbsim_path, qshmm_path):
         ]
         
         try:
-            subprocess.run(pbsim_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-        except subprocess.CalledProcessError:
-            print(f"Error running PBSIM on {template_file}")
+            # Capture the output instead of discarding it
+            result = subprocess.run(pbsim_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False, text=True)
+            if result.returncode != 0:
+                print(f"Error running PBSIM on {template_file}")
+                print(f"Command: {' '.join(pbsim_cmd)}")
+                print(f"Return code: {result.returncode}")
+                print(f"Error output: {result.stderr}")
+                continue
+        except Exception as e:
+            print(f"Exception when running PBSIM on {template_file}: {str(e)}")
             continue
             
         # Run CCS
