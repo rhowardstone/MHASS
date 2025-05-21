@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
+import shutil
 
 def extract_passes(template_file):
     """Extract the number of passes from the template filename."""
@@ -87,6 +88,17 @@ def run_pbsim(template_dir, output_base, pbsim_path, qshmm_path, threads):
     # Ensure PBSIM and QSHMM paths are valid
     pbsim_path = Path(pbsim_path)
     qshmm_path = Path(qshmm_path)
+
+    
+    # If the specified QSHMM path doesn't exist, try to find it in common locations
+    if not qshmm_path.exists():
+        # Check environment data directory
+        conda_prefix = os.environ.get("CONDA_PREFIX")
+        if conda_prefix:
+            conda_data_path = Path(conda_prefix) / "data" / "QSHMM-RSII.model"
+            if conda_data_path.exists():
+                qshmm_path = conda_data_path
+                print(f"Using QSHMM model from conda environment: {qshmm_path}")
     
     # If pbsim is not found at the specified path, try to find it in the PATH
     if not pbsim_path.exists():
@@ -96,23 +108,6 @@ def run_pbsim(template_dir, output_base, pbsim_path, qshmm_path, threads):
             print(f"Using pbsim from PATH: {pbsim_path}")
         else:
             print(f"Warning: PBSIM not found at {pbsim_path}. Simulation may fail.")
-    
-    # If QSHMM is not found, look for it in standard locations
-    if not qshmm_path.exists():
-        # Try common locations
-        common_locations = [
-            Path("/usr/local/share/pbsim3/data/QSHMM-RSII.model"),
-            Path("/usr/share/pbsim3/data/QSHMM-RSII.model"),
-            Path("./pbsim3/data/QSHMM-RSII.model")
-        ]
-        
-        for loc in common_locations:
-            if loc.exists():
-                qshmm_path = loc
-                print(f"Using QSHMM model from: {qshmm_path}")
-                break
-        else:
-            print(f"Warning: QSHMM model not found at {qshmm_path}. Simulation may fail.")
     
     # Find all template FASTA files
     fastas = sorted(template_dir.glob("*.fasta"))
