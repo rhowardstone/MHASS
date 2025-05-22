@@ -122,6 +122,27 @@ def run_simulation(args):
     # Step 4: Combine and relabel CCS reads
     print("\n==> STEP 4: Combining and relabeling CCS reads <==\n")
     combine_fastqs(sim_reads_dir, combined_reads)
+
+    print("\n==> STEP 5: Cleaning up intermediate files <==\n")
+    # Move sequence mapping file up one directory
+    sequence_mapping_src = templates_dir / "sequence_file_mapping.tsv"
+    sequence_mapping_dest = output_dir / "sequence_file_mapping.tsv"
+    
+    if sequence_mapping_src.exists():
+        shutil.move(str(sequence_mapping_src), str(sequence_mapping_dest))
+        print(f"Moved sequence mapping file to: {sequence_mapping_dest}")
+    else:
+        print("Warning: sequence_file_mapping.tsv not found in templates directory")
+    
+    # Remove templates directory
+    if templates_dir.exists():
+        shutil.rmtree(templates_dir)
+        print(f"Removed templates directory: {templates_dir}")
+    
+    # Remove sim_reads directory
+    if sim_reads_dir.exists():
+        shutil.rmtree(sim_reads_dir)
+        print(f"Removed sim_reads directory: {sim_reads_dir}")
     
     print("\n==> FINISHED <==\n")
     print(f"Final output: {combined_reads}")
