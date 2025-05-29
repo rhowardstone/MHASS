@@ -99,6 +99,7 @@ if (startsWith(dist_spec, "empirical:")) {
     stop("Empirical abundance file not found: ", file_path)
   }
   gdf <- read.delim(file_path, header=FALSE)
+  stopifnot(all(c("GenomeID", "Proportion") %in% colnames(gdf)))
   colnames(gdf) <- c("genomeid", "proportion")
   genome_props <- setNames(gdf$proportion, gdf$genomeid)
   genome_props <- genome_props[names(genome_props) %in% genome_ids]
