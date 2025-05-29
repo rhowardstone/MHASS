@@ -56,6 +56,7 @@ def create_per_sequence_templates(fasta_path, counts_path, output_dir, barcode_f
     # Load barcodes
     barcodes = []
     with open(barcode_file) as f:
+        next(f)  # skip header
         for line in f:
             parts = line.strip().split('\t')
             if len(parts) >= 3:
