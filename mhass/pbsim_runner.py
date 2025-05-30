@@ -33,6 +33,8 @@ def run_chunk(chunk_id, fasta_chunk, output_base, pbsim_path, qshmm_path):
             "--template", str(template_file),
             "--method", "qshmm",
             "--qshmm", str(qshmm_path),
+            "--length-mean", "25000",
+            "--length-sd", "0",
             "--accuracy-mean", "0.85",
             "--pass-num", str(np_value),
             "--prefix", str(out_dir / "sim")
