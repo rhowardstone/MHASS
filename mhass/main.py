@@ -90,13 +90,24 @@ def run_simulation(args):
     # Step 2: Create templates
     print("\n==> STEP 2: Creating templates <==\n")
     templates_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Prepare np distribution parameters
+    np_params = {
+        'distribution_type': args.np_distribution_type,
+        'empirical_file': np_distribution if args.np_distribution_type == 'empirical' else None,
+        'gamma_shape': args.gamma_shape,
+        'gamma_scale': args.gamma_scale,
+        'np_min': args.np_min,
+        'np_max': args.np_max
+    }
+    
     create_per_sequence_templates(
         args.amplicon_fasta,
         counts_file,
         templates_dir,
         barcode_file,
         barcode_mapping,
-        np_distribution
+        np_params  # Pass the np_params dict instead of just the file
     )
     
     # Step 3: Simulate and process reads
@@ -173,6 +184,17 @@ def main():
                         help="Distribution for genome abundances (uniform, lognormal, powerlaw, or empirical:<file>)")
     parser.add_argument("--barcode-file", default=None,
                         help="TSV file with barcodes (id, forward, reverse)")
+    parser.add_argument("--np-distribution-type", default="empirical",
+                    choices=["empirical", "gamma"],
+                    help="Type of np distribution: empirical (from file) or gamma")
+    parser.add_argument("--gamma-shape", type=float, default=2.0,
+                        help="Shape parameter for gamma distribution (alpha)")  
+    parser.add_argument("--gamma-scale", type=float, default=3.0,
+                        help="Scale parameter for gamma distribution (beta)")
+    parser.add_argument("--np-min", type=int, default=2,
+                        help="Minimum np value when using gamma distribution")
+    parser.add_argument("--np-max", type=int, default=50,
+                        help="Maximum np value when using gamma distribution")
     parser.add_argument("--np-distribution", default=None,
                         help="TSV file with empirical num-passes distribution")
     parser.add_argument("--threads", type=int, default=multiprocessing.cpu_count(),
