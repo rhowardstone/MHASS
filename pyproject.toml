@@ -21,6 +21,7 @@ classifiers = [
 ]
 dependencies = [
     "tqdm>=4.50.0",
+    "numpy>=1.18.0",
 ]
 
 [project.scripts]
