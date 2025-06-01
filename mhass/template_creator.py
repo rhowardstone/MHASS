@@ -2,6 +2,7 @@
 
 import os
 import random
+import numpy as np
 from collections import defaultdict
 from pathlib import Path
 
@@ -24,7 +25,39 @@ def load_np_distribution(np_file):
                 weighted.extend([np_val] * count)
     return weighted
 
-def create_per_sequence_templates(fasta_path, counts_path, output_dir, barcode_file, barcode_mapping_file, np_distribution_path):
+def sample_np_gamma(shape, scale, np_min, np_max):
+    """Sample np value from gamma distribution with bounds."""
+    while True:
+        # Sample from gamma distribution
+        value = np.random.gamma(shape, scale)
+        # Round to integer and apply bounds
+        np_val = int(round(value))
+        if np_min <= np_val <= np_max:
+            return np_val
+
+def create_np_sampler(np_params):
+    """Create appropriate np sampler based on distribution type."""
+    dist_type = np_params['distribution_type']
+    
+    if dist_type == 'empirical':
+        # Load empirical distribution
+        np_values = load_np_distribution(np_params['empirical_file'])
+        return lambda: random.choice(np_values)
+    
+    elif dist_type == 'gamma':
+        # Create gamma sampler
+        shape = np_params['gamma_shape']
+        scale = np_params['gamma_scale'] 
+        np_min = np_params['np_min']
+        np_max = np_params['np_max']
+        
+        print(f"Using gamma distribution: shape={shape}, scale={scale}, range=[{np_min}, {np_max}]")
+        return lambda: sample_np_gamma(shape, scale, np_min, np_max)
+    
+    else:
+        raise ValueError(f"Unknown distribution type: {dist_type}")
+
+def create_per_sequence_templates(fasta_path, counts_path, output_dir, barcode_file, barcode_mapping_file, np_params):
     """Create per-sequence template files with barcodes and sampled np values for PacBio simulation."""
     # Load FASTA
     seqs = {}
@@ -50,8 +83,8 @@ def create_per_sequence_templates(fasta_path, counts_path, output_dir, barcode_f
     sample_names = lines[0][1:]
     count_data = {row[0]: list(map(int, row[1:])) for row in lines[1:]}
 
-    # Load empirical np distribution
-    np_values = load_np_distribution(np_distribution_path)
+    # Create np value sampler
+    sample_np = create_np_sampler(np_params)
 
     # Load barcodes
     barcodes = []
@@ -95,7 +128,7 @@ def create_per_sequence_templates(fasta_path, counts_path, output_dir, barcode_f
             bc = barcodes[i]
             revcomp = reverse_complement(bc['reverse'])
             for j in range(count):
-                np_val = random.choice(np_values)
+                np_val = sample_np()  # Use the appropriate sampler
                 barcoded_seq = f"A{bc['forward']}{seq}{revcomp}A"
                 filename = f"{template_prefix}_{bc['id']}_np{np_val}.fasta"
                 header = f">{asv_id}::{sample}::Copy{j+1}::Barcode{bc['id']}"
