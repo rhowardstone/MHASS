@@ -1,4 +1,5 @@
 # MHASS
+
 **Microbiome HiFi Amplicon Sequencing Simulator**
 
 A complete pipeline for simulating PacBio HiFi amplicon sequencing data for microbiome studies.
@@ -11,7 +12,7 @@ cd MHASS
 bash install_dependencies.sh
 ```
 
-This will take some time to install all dependencies. After installation:
+After installation:
 
 ```bash
 conda activate mhass
@@ -37,127 +38,110 @@ mhass --amplicon-fasta amplicons.fa \
       --num-reads 5000 \
       --dispersion 0.15 \
       --genome-distribution lognormal \
+      --barcode-file my_barcodes.tsv \
+      --np-distribution-type gamma \
+      --gamma-shape 2.0 \
+      --gamma-scale 3.0 \
+      --np-min 2 \
+      --np-max 50 \
+      --subread-accuracy 0.85 \
       --threads 16
 ```
 
 ## Parameters
 
 ### Required Parameters
-- `--amplicon-fasta`: Input FASTA file containing amplicon sequences
-- `--amplicon-genome-labels`: TSV file mapping amplicons to genomes
-- `--output-dir`: Directory where all output files will be written
+
+* `--amplicon-fasta`: Input FASTA file of amplicon sequences
+* `--amplicon-genome-labels`: TSV file mapping amplicons to genome IDs (`asvid` and `genomeid` columns)
+* `--output-dir`: Directory where output files will be written
 
 ### Optional Parameters
-- `--num-samples`: Number of samples to simulate (default: 10)
-- `--num-reads`: Number of reads per sample (default: 10,000)
-- `--dispersion`: Dispersion parameter for count simulation (default: 0.1)
-- `--genome-distribution`: Distribution for genome abundances (default: uniform)
-  - Options: `uniform`, `lognormal`, `powerlaw`, or `empirical:<file.tsv>`
-- `--barcode-file`: Custom TSV file with barcodes (default: uses built-in barcodes)
-- `--np-distribution`: Custom TSV file with num-passes distribution (default: uses built-in distribution)
-- `--threads`: Number of threads for parallel processing (default: all available cores)
+
+* `--num-samples`: Number of simulated samples (default: 10)
+* `--num-reads`: Number of reads per sample (default: 10,000)
+* `--dispersion`: Dispersion parameter for count simulation (default: 0.1)
+* `--genome-distribution`: `uniform`, `lognormal`, `powerlaw`, or `empirical:<file.tsv>`
+* `--barcode-file`: TSV file with barcodes (default: bundled file)
+* `--np-distribution-type`: `empirical` or `gamma` (default: `empirical`)
+* `--np-distribution`: TSV file for empirical number-of-passes distribution
+* `--gamma-shape`: Gamma shape parameter if using `gamma` np distribution (default: 2.0)
+* `--gamma-scale`: Gamma scale parameter (default: 3.0)
+* `--np-min`: Minimum np value (default: 2)
+* `--np-max`: Maximum np value (default: 50)
+* `--subread-accuracy`: Subread accuracy for PBSIM (default: 0.85)
+* `--threads`: Number of threads for parallel PBSIM + CCS execution (default: all CPUs)
 
 ## Input File Formats
 
-### 1. Amplicon FASTA File
-Standard FASTA format with amplicon sequences:
+### 1. Amplicon FASTA
+
 ```
 >ASV001
 ATCGATCGATCGATCG...
->ASV002
-GCTAGCTAGCTAGCTA...
 ```
 
-### 2. Amplicon-Genome Labels File (TSV)
-Tab-separated file mapping amplicons to genomes:
+### 2. Amplicon-to-Genome Label TSV
+
 ```
 asvid	genomeid
 ASV001	Genome1
-ASV002	Genome1
-ASV003	Genome2
-ASV004	Genome3
+ASV002	Genome2
 ```
 
-### 3. Barcode File (TSV) - Optional
-Tab-separated file with barcode sequences:
+### 3. Barcode File (optional)
+
 ```
 BarcodeID	ForwardBarcode	ReverseBarcode
 BC01	CACATATCAGAGTGCG	TGGCGTGCATGATTCGA
-BC02	ACACACAGACTGTGAG	ACGCACGACATGGACAT
-BC03	ACACATCTCGTGAGAG	ACGAGACACTCACATGA
 ```
 
-### 4. NP Distribution File (TSV) - Optional
-Tab-separated file with num-passes distribution:
+### 4. Num-Passes Distribution (optional)
+
 ```
 num_passes	count
-1	20
-2	50
-3	100
-4	200
-5	250
+2	19
+3	23159
+...
 ```
 
-### 5. Empirical Abundance File (TSV) - Optional
-For `--genome-distribution empirical:<file>`:
+### 5. Empirical Genome Abundance (if used)
+
 ```
 genomeid	proportion
 Genome1	0.45
 Genome2	0.30
-Genome3	0.25
 ```
 
 ## Output Files
 
-The simulation creates the following files in the output directory:
-
-- `counts.tsv`: Simulated count matrix (ASVs × Samples)
-- `counts_meta.tsv`: Metadata for count matrix (sample library sizes)
-- `sample_barcode_map.tsv`: Mapping between samples and barcodes
-- `sequence_file_mapping.tsv`: Mapping of sequences to template files
-- `combined_reads.fastq`: Final combined FASTQ file with simulated reads
+* `counts.tsv`: Simulated ASV counts per sample
+* `counts_meta.tsv`: Sample library sizes
+* `sample_barcode_map.tsv`: Mapping of samples to barcodes
+* `sequence_file_mapping.tsv`: Detailed template mappings
+* `combined_reads.fastq`: Final output FASTQ file
 
 ## Workflow
 
-MHASS performs the following steps:
-
-1. **Count Simulation**: Uses metaSPARSim to generate realistic count matrices based on genome abundances
-2. **Template Creation**: Creates barcoded template sequences for each ASV×Sample combination
-3. **Read Simulation**: Uses PBSIM3 to simulate PacBio reads from templates
-4. **CCS Processing**: Generates Circular Consensus Sequences using PacBio CCS
-5. **Output Generation**: Combines all reads into a single FASTQ file
-6. **Cleanup**: Removes intermediate files, keeping only essential outputs
+1. **Count Simulation**: Uses `metaSPARSim` to simulate ASV abundance across samples based on genome distribution.
+2. **Template Creation**: Templates are created per ASV×?Sample with barcodes and sampled np values.
+3. **Read Simulation**: PBSIM3 simulates PacBio subreads per template with user-defined `--subread-accuracy`.
+4. **CCS Processing**: Subreads are collapsed into CCS reads using `ccs`.
+5. **Read Relabeling**: All CCS reads are relabeled and merged into `combined_reads.fastq`.
+6. **Cleanup**: Intermediate files are cleaned up, leaving only final outputs.
 
 ## Example
 
 ```bash
-# Create test data structure
-mkdir -p test_data
-
-# Run simulation with 5 samples, 1000 reads each
-mhass --amplicon-fasta test_data/amplicons.fa \
-      --amplicon-genome-labels test_data/labels.tsv \
-      --output-dir simulation_output/ \
+mhass --amplicon-fasta test/amplicons.fa \
+      --amplicon-genome-labels test/labels.tsv \
+      --output-dir output/ \
       --num-samples 5 \
       --num-reads 1000 \
-      --threads 8
+      --threads 4 \
+      --subread-accuracy 0.9
 ```
-
-## Dependencies
-
-- Python 3.6+
-- R 4.0+
-- PBSIM3
-- PacBio CCS tools
-- Required R packages: metaSPARSim, Biostrings, optparse
-- Required Python packages: tqdm
-
-All dependencies are automatically installed by the installation script.
 
 ## Citation
 
-If you use MHASS in your research, please cite:
-
-```
-[Add citation information when available]
-```
+TBD ?? please cite appropriately once the tool is published.
