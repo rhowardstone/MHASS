@@ -127,9 +127,10 @@ def run_simulation(args):
         sim_reads_dir,
         pbsim_path,
         qshmm_path,
-        args.threads
+        args.threads,
+        args.subread_accuracy
     )
-    
+
     # Step 4: Combine and relabel CCS reads
     print("\n==> STEP 4: Combining and relabeling CCS reads <==\n")
     combine_fastqs(sim_reads_dir, combined_reads)
@@ -184,6 +185,8 @@ def main():
                         help="Distribution for genome abundances (uniform, lognormal, powerlaw, or empirical:<file>)")
     parser.add_argument("--barcode-file", default=None,
                         help="TSV file with barcodes (id, forward, reverse)")
+    parser.add_argument("--subread-accuracy", type=float, default=0.85,
+                        help="Mean subread accuracy used in PBSIM (default: 0.85)")
     parser.add_argument("--np-distribution-type", default="empirical",
                     choices=["empirical", "gamma"],
                     help="Type of np distribution: empirical (from file) or gamma")
