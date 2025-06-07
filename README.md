@@ -23,9 +23,7 @@ conda activate mhass
 ### Basic Command
 
 ```bash
-mhass --amplicon-fasta amplicons.fa \
-      --amplicon-genome-labels labels.tsv \
-      --output-dir output/
+mhass --amplicon-fasta amplicons.fa --amplicon-genome-labels labels.tsv --output-dir output/
 ```
 
 ### Full Command with Options
