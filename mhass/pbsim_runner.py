@@ -13,7 +13,7 @@ def extract_passes(template_file):
     match = re.search(r"_np(\d+)", template_file.name)
     return int(match.group(1)) if match else None
 
-def run_chunk(chunk_id, fasta_chunk, output_base, pbsim_path, qshmm_path):
+def run_chunk(chunk_id, fasta_chunk, output_base, pbsim_path, qshmm_path, subread_accuracy):
     """Run PBSIM on a chunk of template files."""
     results = []
     for template_file in fasta_chunk:
@@ -35,7 +35,7 @@ def run_chunk(chunk_id, fasta_chunk, output_base, pbsim_path, qshmm_path):
             "--qshmm", str(qshmm_path),
             "--length-mean", "25000",
             "--length-sd", "0",
-            "--accuracy-mean", "0.85",
+            "--accuracy-mean", str(subread_accuracy),
             "--pass-num", str(np_value),
             "--prefix", str(out_dir / "sim")
         ]
@@ -81,7 +81,7 @@ def chunked(lst, n_chunks):
     # Remove empty chunks
     return [chunk for chunk in chunks if chunk]
 
-def run_pbsim(template_dir, output_base, pbsim_path, qshmm_path, threads):
+def run_pbsim(template_dir, output_base, pbsim_path, qshmm_path, threads, subread_accuracy):
     """Run PBSIM on template files in parallel."""
     template_dir = Path(template_dir)
     output_base = Path(output_base)
@@ -125,7 +125,7 @@ def run_pbsim(template_dir, output_base, pbsim_path, qshmm_path, threads):
     # Process chunks in parallel
     with ThreadPoolExecutor(max_workers=threads) as executor:
         futures = {
-            executor.submit(run_chunk, i, chunk, output_base, pbsim_path, qshmm_path): i
+        executor.submit(run_chunk, i, chunk, output_base, pbsim_path, qshmm_path, subread_accuracy): i
             for i, chunk in enumerate(chunks)
         }
         
