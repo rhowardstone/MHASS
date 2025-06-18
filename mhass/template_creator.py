@@ -46,8 +46,8 @@ def create_np_sampler(np_params):
     
     elif dist_type == 'lognormal':
         # Create lognormal sampler
-        mean_np = np_params['lognormal_mean']
-        sd_np = np_params['lognormal_sd']
+        mean_np = np_params['lognormal_mu']
+        sd_np = np_params['lognormal_sigma']
         np_min = np_params['np_min']
         np_max = np_params['np_max']
         
