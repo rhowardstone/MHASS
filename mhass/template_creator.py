@@ -25,11 +25,11 @@ def load_np_distribution(np_file):
                 weighted.extend([np_val] * count)
     return weighted
 
-def sample_np_gamma(shape, scale, np_min, np_max):
-    """Sample np value from gamma distribution with bounds."""
+def sample_np_lognormal(mu, sigma, np_min, np_max):
+    """Sample np value from lognormal distribution with bounds."""
     while True:
-        # Sample from gamma distribution
-        value = np.random.gamma(shape, scale)
+        # Sample from lognormal distribution
+        value = np.random.lognormal(mu, sigma)
         # Round to integer and apply bounds
         np_val = int(round(value))
         if np_min <= np_val <= np_max:
@@ -44,15 +44,15 @@ def create_np_sampler(np_params):
         np_values = load_np_distribution(np_params['empirical_file'])
         return lambda: random.choice(np_values)
     
-    elif dist_type == 'gamma':
-        # Create gamma sampler
-        shape = np_params['gamma_shape']
-        scale = np_params['gamma_scale'] 
+    elif dist_type == 'lognormal':
+        # Create lognormal sampler
+        mean_np = np_params['lognormal_mean']
+        sd_np = np_params['lognormal_sd']
         np_min = np_params['np_min']
         np_max = np_params['np_max']
         
-        print(f"Using gamma distribution: shape={shape}, scale={scale}, range=[{np_min}, {np_max}]")
-        return lambda: sample_np_gamma(shape, scale, np_min, np_max)
+        print(f"Using lognormal distribution: mean={mean_np}, sd={sd_np}, range=[{np_min}, {np_max}]")
+        return lambda: sample_np_lognormal(mean_np, sd_np, np_min, np_max)
     
     else:
         raise ValueError(f"Unknown distribution type: {dist_type}")
