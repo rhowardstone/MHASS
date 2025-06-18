@@ -51,7 +51,7 @@ def create_np_sampler(np_params):
         np_min = np_params['np_min']
         np_max = np_params['np_max']
         
-        print(f"Using lognormal distribution: mean={mean_np}, sd={sd_np}, range=[{np_min}, {np_max}]")
+        print(f"Using lognormal distribution: mu={mean_np}, sigma={sd_np}, range=[{np_min}, {np_max}]")
         return lambda: sample_np_lognormal(mean_np, sd_np, np_min, np_max)
     
     else:
