@@ -95,8 +95,8 @@ def run_simulation(args):
     np_params = {
         'distribution_type': args.np_distribution_type,
         'empirical_file': np_distribution if args.np_distribution_type == 'empirical' else None,
-        'gamma_shape': args.gamma_shape,
-        'gamma_scale': args.gamma_scale,
+        'lognormal_mu': args.lognormal_mu,
+        'lognormal_sigma': args.lognormal_sigma,
         'np_min': args.np_min,
         'np_max': args.np_max
     }
@@ -188,21 +188,20 @@ def main():
     parser.add_argument("--subread-accuracy", type=float, default=0.85,
                         help="Mean subread accuracy used in PBSIM (default: 0.85)")
     parser.add_argument("--np-distribution-type", default="empirical",
-                    choices=["empirical", "gamma"],
-                    help="Type of np distribution: empirical (from file) or gamma")
-    parser.add_argument("--gamma-shape", type=float, default=2.0,
-                        help="Shape parameter for gamma distribution (alpha)")  
-    parser.add_argument("--gamma-scale", type=float, default=3.0,
-                        help="Scale parameter for gamma distribution (beta)")
+                    choices=["empirical", "lognormal"],
+                    help="Type of np distribution: empirical (from file) or lognormal")
+    parser.add_argument("--lognormal-mu", type=float, default=3.88,
+                    help="μ parameter for lognormal distribution of NP (default from empirical fit)")
+    parser.add_argument("--lognormal-sigma", type=float, default=1.22,
+                    help="σ parameter for lognormal distribution of NP (default from empirical fit)")
     parser.add_argument("--np-min", type=int, default=2,
-                        help="Minimum np value when using gamma distribution")
+                        help="Minimum np value when using lognormal distribution")
     parser.add_argument("--np-max", type=int, default=50,
-                        help="Maximum np value when using gamma distribution")
+                        help="Maximum np value when using lognormal distribution")
     parser.add_argument("--np-distribution", default=None,
                         help="TSV file with empirical num-passes distribution")
     parser.add_argument("--threads", type=int, default=multiprocessing.cpu_count(),
                         help="Number of threads to use for parallel processing")
-    
     args = parser.parse_args()
     
     success = run_simulation(args)
