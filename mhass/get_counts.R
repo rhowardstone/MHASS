@@ -132,7 +132,7 @@ mu_vec <- sapply(asv_to_genome, function(gid) {
   if (is.na(prop) || is.na(n_asvs)) return(0)
   prop / n_asvs
 })
-mu_vec <- mu_vec / sum(mu_vec)  # Normalize again just in case
+mu_vec <- mu_vec * mean(lib_sizes) / sum(mu_vec) #scale to library size
 
 # Build ASV-level variability using fitted model
 message("Computing ASV-level variability parameters...")
