@@ -28,8 +28,9 @@ def get_resource_path(resource_name):
     """Get the path to a resource file bundled with the package."""
     return get_package_path() / "resources" / resource_name
 
-def run_r_count_script(fasta_path, genome_map, num_samples, num_reads, dispersion, 
-                      genome_distribution, output_counts, output_meta):
+def run_r_count_script(fasta_path, genome_map, num_samples, num_reads, 
+                      var_intercept, var_slope, genome_distribution, 
+                      output_counts, output_meta):
     """Run the R script to generate count matrix."""
     r_script_path = get_package_path() / "get_counts.R"
     
@@ -38,7 +39,8 @@ def run_r_count_script(fasta_path, genome_map, num_samples, num_reads, dispersio
         "-f", str(fasta_path),
         "-n", str(num_samples),
         "-r", str(num_reads),
-        "-d", str(dispersion),
+        "--var-intercept", str(var_intercept),
+        "--var-slope", str(var_slope),
         "-G", str(genome_map),
         "--genome-distribution", genome_distribution,
         "-o", str(output_counts),
@@ -78,7 +80,8 @@ def run_simulation(args):
         args.amplicon_genome_labels,
         args.num_samples,
         args.num_reads,
-        args.dispersion,
+        args.var_intercept,
+        args.var_slope,
         args.genome_distribution,
         counts_file,
         meta_file
@@ -179,8 +182,10 @@ def main():
                         help="Number of samples to simulate")
     parser.add_argument("--num-reads", type=int, default=10000,
                         help="Number of reads per sample")
-    parser.add_argument("--dispersion", type=float, default=0.1,
-                        help="Dispersion parameter for count simulation")
+    parser.add_argument("--var-intercept", type=float, default=1.47565981333483,
+                        help="Intercept for ASV variability model (controls baseline variation between samples)")
+    parser.add_argument("--var-slope", type=float, default=-0.909890963463704,
+                        help="Slope for ASV variability model (how variation changes with abundance)")
     parser.add_argument("--genome-distribution", default="uniform",
                         help="Distribution for genome abundances (uniform, lognormal, powerlaw, or empirical:<file>)")
     parser.add_argument("--barcode-file", default=None,
