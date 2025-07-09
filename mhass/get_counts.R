@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 # get_counts.R
-# Purpose: Simulate Titan ASV counts using metaSPARSim with genome-aware distribution logic
+# Purpose: Simulate Titan ASV counts using metaSPARSim with variance model from R1 fit
 
 suppressMessages({
   # Check for required packages
@@ -51,7 +51,10 @@ option_list <- list(
   make_option(c("-f", "--fasta"), type="character", help="Input FASTA file of ASVs"),
   make_option(c("-n", "--samples"), type="integer", default=10),
   make_option(c("-r", "--reads"), type="integer", default=10000),
-  make_option(c("-d", "--dispersion"), type="double", default=0.1),
+  make_option(c("--var-intercept"), type="double", default=1.47565981333483,
+              help="Intercept for variability model [default: R1 fitted value]"),
+  make_option(c("--var-slope"), type="double", default=-0.909890963463704,
+              help="Slope for variability model (coefficient of 1/intensity) [default: R1 fitted value]"),
   make_option(c("-G", "--genome-map"), type="character", help="TSV: asv_id<TAB>genome_id"),
   make_option(c("--genome-distribution"), type="character", default="uniform",
               help="One of: uniform, lognormal, powerlaw, or empirical:<file.tsv>"),
@@ -120,7 +123,7 @@ if (startsWith(dist_spec, "empirical:")) {
   stop("Invalid --genome-distribution. Use uniform, lognormal, powerlaw, or empirical:<file>")
 }
 
-# Build ASV-level mu
+# Build ASV-level intensity (mean abundance)
 message("Building ASV-level intensity parameters...")
 asv_counts_per_genome <- table(genome_map$genomeid)
 mu_vec <- sapply(asv_to_genome, function(gid) {
@@ -131,10 +134,33 @@ mu_vec <- sapply(asv_to_genome, function(gid) {
 })
 mu_vec <- mu_vec / sum(mu_vec)  # Normalize again just in case
 
+# Build ASV-level variability using fitted model
+message("Computing ASV-level variability parameters...")
+message(sprintf("Using variability model: variability = %.6f + %.6f / intensity", 
+                opt$`var-intercept`, opt$`var-slope`))
+
+# Calculate variability for each ASV based on its intensity
+phi_vec <- opt$`var-intercept` + opt$`var-slope` / mu_vec
+
+# Handle edge cases
+phi_vec[mu_vec == 0] <- NA  # No intensity = no variability defined
+phi_vec[phi_vec <= 0] <- NA  # Negative or zero variability is invalid
+
+# Report statistics
+n_na <- sum(is.na(phi_vec))
+n_valid <- sum(!is.na(phi_vec))
+message(sprintf("=> Variability: %d valid, %d NA (zero intensity or negative variability)", 
+                n_valid, n_na))
+
+if (n_valid > 0) {
+  valid_phi <- phi_vec[!is.na(phi_vec)]
+  message(sprintf("   Valid variability range: %.4f to %.4f (median: %.4f)",
+                  min(valid_phi), max(valid_phi), median(valid_phi)))
+}
+
 # Final prep for metaSPARSim
 feature_names <- paste0("Feature_", seq_along(mu_vec))
 names(mu_vec) <- feature_names
-phi_vec <- rep(opt$dispersion, length(mu_vec))
 names(phi_vec) <- feature_names
 
 dataset_parameters <- list(G1 = list(
@@ -155,6 +181,18 @@ counts_df <- data.frame(ASVID = rownames(counts), counts, check.names = FALSE)
 write.table(counts_df, file = opt$out, quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE)
 write.table(data.frame(Sample=colnames(counts), LibrarySize=colSums(counts)),
           file = opt$meta, row.names = FALSE, sep = "\t", quote = FALSE)
+
+# Also save the parameters used
+param_df <- data.frame(
+  ASVID = names(asv_to_genome),
+  intensity = mu_vec,
+  variability = phi_vec,
+  stringsAsFactors = FALSE
+)
+write.table(param_df, file = sub("\\.tsv$", "_params.tsv", opt$out), 
+            quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE)
+
 message("=> Simulation complete. <=")
 message(paste("- Count matrix:", opt$out))
 message(paste("- Metadata:", opt$meta))
+message(paste("- Parameters:", sub("\\.tsv$", "_params.tsv", opt$out)))
