@@ -196,9 +196,9 @@ def main():
                     choices=["empirical", "lognormal"],
                     help="Type of np distribution: empirical (from file) or lognormal")
     parser.add_argument("--lognormal-mu", type=float, default=3.88,
-                    help="μ parameter for lognormal distribution of NP (default from empirical fit)")
+                    help="μ parameter for lognormal distribution of Number of Passes (default from empirical fit)")
     parser.add_argument("--lognormal-sigma", type=float, default=1.22,
-                    help="σ parameter for lognormal distribution of NP (default from empirical fit)")
+                    help="σ parameter for lognormal distribution of Num Passes (default from empirical fit)")
     parser.add_argument("--np-min", type=int, default=2,
                         help="Minimum np value when using lognormal distribution")
     parser.add_argument("--np-max", type=int, default=50,
