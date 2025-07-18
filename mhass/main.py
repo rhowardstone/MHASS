@@ -190,8 +190,8 @@ def main():
                         help="Distribution for genome abundances (uniform, lognormal, powerlaw, or empirical:<file>)")
     parser.add_argument("--barcode-file", default=None,
                         help="TSV file with barcodes (id, forward, reverse)")
-    parser.add_argument("--subread-accuracy", type=float, default=0.85,
-                        help="Mean subread accuracy used in PBSIM (default: 0.85)")
+    parser.add_argument("--subread-accuracy", type=float, default=0.65,
+                        help="Mean subread accuracy used in PBSIM (default: 0.65)")
     parser.add_argument("--np-distribution-type", default="empirical",
                     choices=["empirical", "lognormal"],
                     help="Type of np distribution: empirical (from file) or lognormal")
@@ -201,7 +201,7 @@ def main():
                     help="σ parameter for lognormal distribution of Num Passes (default from empirical fit)")
     parser.add_argument("--np-min", type=int, default=2,
                         help="Minimum np value when using lognormal distribution")
-    parser.add_argument("--np-max", type=int, default=50,
+    parser.add_argument("--np-max", type=int, default=59,
                         help="Maximum np value when using lognormal distribution")
     parser.add_argument("--np-distribution", default=None,
                         help="TSV file with empirical num-passes distribution")
