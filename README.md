@@ -56,7 +56,7 @@ options:
   --barcode-file BARCODE_FILE
                         TSV file with barcodes (id, forward, reverse) (default: None)
   --subread-accuracy SUBREAD_ACCURACY
-                        Mean subread accuracy used in PBSIM (default: 0.85) (default: 0.85)
+                        Mean subread accuracy used in PBSIM (default: 0.65) (default: 0.65)
   --np-distribution-type {empirical,lognormal}
                         Type of np distribution: empirical (from file) or lognormal (default: empirical)
   --lognormal-mu LOGNORMAL_MU
@@ -64,7 +64,7 @@ options:
   --lognormal-sigma LOGNORMAL_SIGMA
                         sigma parameter for lognormal distribution of Num Passes (default from empirical fit) (default: 1.22)
   --np-min NP_MIN       Minimum np value when using lognormal distribution (default: 2)
-  --np-max NP_MAX       Maximum np value when using lognormal distribution (default: 50)
+  --np-max NP_MAX       Maximum np value when using lognormal distribution (default: 59)
   --np-distribution NP_DISTRIBUTION
                         TSV file with empirical num-passes distribution (default: None)
   --threads THREADS     Number of threads to use for parallel processing (default: 190)
@@ -74,7 +74,7 @@ options:
 
 ### Required Parameters
 
-* `--amplicon-fasta`: Input FASTA file of amplicon sequences
+* `--amplicon-fasta`: Input FASTA file of amplicon reference sequences
 * `--amplicon-genome-labels`: TSV file mapping amplicons to genome IDs (`asvid` and `genomeid` columns)
 * `--output-dir`: Directory where output files will be written
 
@@ -87,11 +87,11 @@ options:
 * `--barcode-file`: TSV file with barcodes (default: bundled file)
 * `--np-distribution-type`: `empirical` or `gamma` (default: `empirical`)
 * `--np-distribution`: TSV file for empirical number-of-passes distribution
-* `--gamma-shape`: Gamma shape parameter if using `gamma` np distribution (default: 2.0)
-* `--gamma-scale`: Gamma scale parameter (default: 3.0)
+* `--lognormal-mu`: Lognormal mean abundance parameter if using `lognormal` np distribution (default: 3.88)
+* `--lognormal-sigma`: Lognormal np variability parameter (default: 1.22)
 * `--np-min`: Minimum np value (default: 2)
-* `--np-max`: Maximum np value (default: 50)
-* `--subread-accuracy`: Subread accuracy for PBSIM (default: 0.85)
+* `--np-max`: Maximum np value (default: 59)
+* `--subread-accuracy`: Subread accuracy for PBSIM (default: 0.65)
 * `--threads`: Number of threads for parallel PBSIM + CCS execution (default: all CPUs)
 
 ## Input File Formats
