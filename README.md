@@ -74,26 +74,26 @@ options:
 
 ### Required Parameters
 
-* `--amplicon-fasta`: Input FASTA file of amplicon reference sequences
-* `--amplicon-genome-labels`: TSV file mapping amplicons to genome IDs (`asvid` and `genomeid` columns)
-* `--output-dir`: Directory where output files will be written
+* `--amplicon-fasta`: Input FASTA file of amplicon reference sequences.
+* `--amplicon-genome-labels`: TSV file mapping each ASV to a genome ID. Format: `asvid<TAB>genomeid`.
+* `--output-dir`: Path to the directory where all output files will be written.
 
 ### Optional Parameters
 
-* `--num-samples`: Number of simulated samples (default: 10)
-* `--num-reads`: Number of reads per sample (default: 10,000)
-* `--dispersion`: Dispersion parameter for count simulation (default: 0.1)
-* `--genome-distribution`: `uniform`, `lognormal`, `powerlaw`, or `empirical:<file.tsv>`
-* `--barcode-file`: TSV file with barcodes (default: bundled file)
-* `--np-distribution-type`: `empirical` or `gamma` (default: `empirical`)
-* `--np-distribution`: TSV file for empirical number-of-passes distribution
-* `--lognormal-mu`: Lognormal mean abundance parameter if using `lognormal` np distribution (default: 3.88)
-* `--lognormal-sigma`: Lognormal np variability parameter (default: 1.22)
-* `--np-min`: Minimum np value (default: 2)
-* `--np-max`: Maximum np value (default: 59)
-* `--subread-accuracy`: Subread accuracy for PBSIM (default: 0.65)
-* `--threads`: Number of threads for parallel PBSIM + CCS execution (default: all CPUs)
-
+* `--num-samples`: Number of synthetic samples to generate (default: `10`).
+* `--num-reads`: Number of reads per sample (default: `10000`).
+* `--var-intercept`: Intercept of the abundance variability model across samples (default: `1.47565981333483`).
+* `--var-slope`: Slope of the abundance variability model as a function of ASV abundance (default: `-0.909890963463704`).
+* `--genome-distribution`: Relative genome abundance distribution model. Options: `uniform`, `lognormal`, `powerlaw`, or `empirical:<file.tsv>` (default: `uniform`).
+* `--barcode-file`: Optional TSV file of barcodes with columns: `id`, `forward`, `reverse`.
+* `--subread-accuracy`: Mean subread accuracy used for PBSIM3 simulation (default: `0.65`).
+* `--np-distribution-type`: Distribution type for number of passes. Options: `empirical` or `lognormal` (default: `empirical`).
+* `--lognormal-mu`: `mu` parameter for lognormal number-of-passes distribution (default: `3.88`).
+* `--lognormal-sigma`: `sigma` parameter for lognormal number-of-passes distribution (default: `1.22`).
+* `--np-min`: Minimum number of passes for lognormal distribution (default: `2`).
+* `--np-max`: Maximum number of passes for lognormal distribution (default: `59`).
+* `--np-distribution`: TSV file specifying empirical number-of-passes distribution. Required if `--np-distribution-type` is `empirical`.
+* `--threads`: Number of parallel threads to use for simulation (default: `190` or all CPUs if unspecified).
 ## Input File Formats
 
 ### 1. Amplicon FASTA
