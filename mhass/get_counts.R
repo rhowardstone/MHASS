@@ -125,14 +125,13 @@ if (startsWith(dist_spec, "empirical:")) {
 
 # Build ASV-level intensity (mean abundance)
 message("Building ASV-level intensity parameters...")
-asv_counts_per_genome <- table(genome_map$genomeid)
 mu_vec <- sapply(asv_to_genome, function(gid) {
   prop <- genome_props[as.character(gid)]
-  n_asvs <- asv_counts_per_genome[as.character(gid)]
-  if (is.na(prop) || is.na(n_asvs)) return(0)
-  prop / n_asvs
+  if (is.na(prop)) return(0)
+  return(prop)  # Each ASV inherits its genome's proportion
 })
-mu_vec <- mu_vec * mean(lib_sizes) / sum(mu_vec) #scale to library size
+# Normalize to sum to 1, then scale to library size
+mu_vec <- mu_vec / sum(mu_vec) * mean(lib_sizes)
 
 # Build ASV-level variability using fitted model
 message("Computing ASV-level variability parameters...")
