@@ -29,21 +29,45 @@ mhass --amplicon-fasta amplicons.fa --amplicon-genome-labels labels.tsv --output
 ### Full Command with Options
 
 ```bash
-mhass --amplicon-fasta amplicons.fa \
-      --amplicon-genome-labels labels.tsv \
-      --output-dir output/ \
-      --num-samples 20 \
-      --num-reads 5000 \
-      --dispersion 0.15 \
-      --genome-distribution lognormal \
-      --barcode-file my_barcodes.tsv \
-      --np-distribution-type gamma \
-      --gamma-shape 2.0 \
-      --gamma-scale 3.0 \
-      --np-min 2 \
-      --np-max 50 \
-      --subread-accuracy 0.85 \
-      --threads 16
+usage: mhass [-h] --amplicon-fasta AMPLICON_FASTA --amplicon-genome-labels AMPLICON_GENOME_LABELS --output-dir OUTPUT_DIR
+             [--num-samples NUM_SAMPLES] [--num-reads NUM_READS] [--var-intercept VAR_INTERCEPT] [--var-slope VAR_SLOPE]
+             [--genome-distribution GENOME_DISTRIBUTION] [--barcode-file BARCODE_FILE] [--subread-accuracy SUBREAD_ACCURACY]
+             [--np-distribution-type {empirical,lognormal}] [--lognormal-mu LOGNORMAL_MU] [--lognormal-sigma LOGNORMAL_SIGMA]
+             [--np-min NP_MIN] [--np-max NP_MAX] [--np-distribution NP_DISTRIBUTION] [--threads THREADS]
+
+options:
+  -h, --help            show this help message and exit
+  --amplicon-fasta AMPLICON_FASTA
+                        Input FASTA file of amplicons (default: None)
+  --amplicon-genome-labels AMPLICON_GENOME_LABELS
+                        TSV file mapping amplicons to genomes (asvid<TAB>genomeid) (default: None)
+  --output-dir OUTPUT_DIR
+                        Output directory for all files (default: None)
+  --num-samples NUM_SAMPLES
+                        Number of samples to simulate (default: 10)
+  --num-reads NUM_READS
+                        Number of reads per sample (default: 10000)
+  --var-intercept VAR_INTERCEPT
+                        Intercept for ASV variability model (controls baseline variation between samples) (default: 1.47565981333483)
+  --var-slope VAR_SLOPE
+                        Slope for ASV variability model (how variation changes with abundance) (default: -0.909890963463704)
+  --genome-distribution GENOME_DISTRIBUTION
+                        Distribution for genome abundances (uniform, lognormal, powerlaw, or empirical:<file>) (default: uniform)
+  --barcode-file BARCODE_FILE
+                        TSV file with barcodes (id, forward, reverse) (default: None)
+  --subread-accuracy SUBREAD_ACCURACY
+                        Mean subread accuracy used in PBSIM (default: 0.85) (default: 0.85)
+  --np-distribution-type {empirical,lognormal}
+                        Type of np distribution: empirical (from file) or lognormal (default: empirical)
+  --lognormal-mu LOGNORMAL_MU
+                        ?? parameter for lognormal distribution of Number of Passes (default from empirical fit) (default: 3.88)
+  --lognormal-sigma LOGNORMAL_SIGMA
+                        ?? parameter for lognormal distribution of Num Passes (default from empirical fit) (default: 1.22)
+  --np-min NP_MIN       Minimum np value when using lognormal distribution (default: 2)
+  --np-max NP_MAX       Maximum np value when using lognormal distribution (default: 50)
+  --np-distribution NP_DISTRIBUTION
+                        TSV file with empirical num-passes distribution (default: None)
+  --threads THREADS     Number of threads to use for parallel processing (default: 190)
 ```
 
 ## Parameters
