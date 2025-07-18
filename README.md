@@ -60,9 +60,9 @@ options:
   --np-distribution-type {empirical,lognormal}
                         Type of np distribution: empirical (from file) or lognormal (default: empirical)
   --lognormal-mu LOGNORMAL_MU
-                        ?? parameter for lognormal distribution of Number of Passes (default from empirical fit) (default: 3.88)
+                        mu parameter for lognormal distribution of Number of Passes (default from empirical fit) (default: 3.88)
   --lognormal-sigma LOGNORMAL_SIGMA
-                        ?? parameter for lognormal distribution of Num Passes (default from empirical fit) (default: 1.22)
+                        sigma parameter for lognormal distribution of Num Passes (default from empirical fit) (default: 1.22)
   --np-min NP_MIN       Minimum np value when using lognormal distribution (default: 2)
   --np-max NP_MAX       Maximum np value when using lognormal distribution (default: 50)
   --np-distribution NP_DISTRIBUTION
