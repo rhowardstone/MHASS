@@ -20,7 +20,7 @@ conda activate mhass
 
 ## Usage
 
-Note: For extracting the ASV FASTA file ('amplicons.fa', below), you may use our other tool: https://github.com/rhowardstone/AmpliconHunter
+Note: For generating the ASV FASTA file required for MHASS ('amplicons.fa', below) from a collection of genomes, you may use our other tool: https://github.com/rhowardstone/AmpliconHunter
 
 ### Basic Command
 
