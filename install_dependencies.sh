@@ -345,6 +345,13 @@ cat > mhass/resources/np_distribution.tsv << 'EOF'
 59	7189
 EOF
 
+
+
+git clone https://github.com/rhowardstone/AmpliconHunter.git
+cd AmpliconHunter
+pip install -e .
+
+
 #=====================
 # Installation Complete
 #=====================
