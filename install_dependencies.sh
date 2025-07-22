@@ -350,7 +350,7 @@ EOF
 git clone https://github.com/rhowardstone/AmpliconHunter.git
 cd AmpliconHunter
 pip install -e .
-
+cd ../
 
 #=====================
 # Installation Complete
