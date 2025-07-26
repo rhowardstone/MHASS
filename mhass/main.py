@@ -131,7 +131,8 @@ def run_simulation(args):
         pbsim_path,
         qshmm_path,
         args.threads,
-        args.subread_accuracy
+        args.subread_accuracy,
+        args.difference_ratio
     )
 
     # Step 4: Combine and relabel CCS reads
@@ -192,6 +193,10 @@ def main():
                         help="TSV file with barcodes (id, forward, reverse)")
     parser.add_argument("--subread-accuracy", type=float, default=0.65,
                         help="Mean subread accuracy used in PBSIM (default: 0.65)")
+    parser.add_argument("--difference-ratio", type=str, default="6:55:39",
+                        help="Difference (error) ratio for PBSIM (substitution:insertion:deletion). "
+                             "Default 6:55:39 is for PacBio RS II. Use 22:45:33 for PacBio Sequel, "
+                             "39:24:36 for ONT")
     parser.add_argument("--np-distribution-type", default="empirical",
                     choices=["empirical", "lognormal"],
                     help="Type of np distribution: empirical (from file) or lognormal")
