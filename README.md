@@ -36,8 +36,8 @@ mhass --amplicon-fasta amplicons.fa --amplicon-genome-labels labels.tsv --output
 usage: mhass [-h] --amplicon-fasta AMPLICON_FASTA --amplicon-genome-labels AMPLICON_GENOME_LABELS --output-dir OUTPUT_DIR
              [--num-samples NUM_SAMPLES] [--num-reads NUM_READS] [--var-intercept VAR_INTERCEPT] [--var-slope VAR_SLOPE]
              [--genome-distribution GENOME_DISTRIBUTION] [--barcode-file BARCODE_FILE] [--subread-accuracy SUBREAD_ACCURACY]
-             [--np-distribution-type {empirical,lognormal}] [--lognormal-mu LOGNORMAL_MU] [--lognormal-sigma LOGNORMAL_SIGMA]
-             [--np-min NP_MIN] [--np-max NP_MAX] [--np-distribution NP_DISTRIBUTION] [--threads THREADS]
+             [--difference-ratio DIFFERENCE_RATIO] [--np-distribution-type {empirical,lognormal}] [--lognormal-mu LOGNORMAL_MU] 
+             [--lognormal-sigma LOGNORMAL_SIGMA] [--np-min NP_MIN] [--np-max NP_MAX] [--np-distribution NP_DISTRIBUTION] [--threads THREADS]
 
 options:
   -h, --help            show this help message and exit
@@ -61,6 +61,8 @@ options:
                         TSV file with barcodes (id, forward, reverse) (default: None)
   --subread-accuracy SUBREAD_ACCURACY
                         Mean subread accuracy used in PBSIM (default: 0.65) (default: 0.65)
+  --difference-ratio DIFFERENCE_RATIO
+                        Difference (error) ratio for PBSIM (substitution:insertion:deletion). Default 6:55:39 is for PacBio RS II. Use 22:45:33 for PacBio Sequel, 39:24:36 for ONT (default: 6:55:39)
   --np-distribution-type {empirical,lognormal}
                         Type of np distribution: empirical (from file) or lognormal (default: empirical)
   --lognormal-mu LOGNORMAL_MU
@@ -91,6 +93,7 @@ options:
 * `--genome-distribution`: Relative genome abundance distribution model. Options: `uniform`, `lognormal`, `powerlaw`, or `empirical:<file.tsv>` (default: `uniform`).
 * `--barcode-file`: Optional TSV file of barcodes with columns: `id`, `forward`, `reverse`.
 * `--subread-accuracy`: Mean subread accuracy used for PBSIM3 simulation (default: `0.65`).
+* `--difference-ratio`: Difference (error) ratio for PBSIM in format `substitution:insertion:deletion`. Each value must be 0-1000. Default `6:55:39` is for PacBio RS II. Use `22:45:33` for PacBio Sequel, `39:24:36` for ONT (default: `6:55:39`).
 * `--np-distribution-type`: Distribution type for number of passes. Options: `empirical` or `lognormal` (default: `empirical`).
 * `--lognormal-mu`: `mu` parameter for lognormal number-of-passes distribution (default: `3.88`).
 * `--lognormal-sigma`: `sigma` parameter for lognormal number-of-passes distribution (default: `1.22`).
@@ -156,7 +159,7 @@ Genome2	0.30
 5. **Read Relabeling**: All CCS reads are relabeled and merged into `combined_reads.fastq`.
 6. **Cleanup**: Intermediate files are cleaned up, leaving only final outputs.
 
-## Example
+## Examples
 
 ```bash
 mhass --amplicon-fasta test/amplicons.fa \
@@ -167,6 +170,31 @@ mhass --amplicon-fasta test/amplicons.fa \
       --threads 4 \
       --subread-accuracy 0.9
 ```
+
+
+# Example for PacBio Sequel
+```bash
+mhass --amplicon-fasta test/amplicons.fa \
+      --amplicon-genome-labels test/labels.tsv \
+      --output-dir output_sequel/ \
+      --num-samples 5 \
+      --num-reads 1000 \
+      --difference-ratio 22:45:33 \
+      --threads 4
+```
+
+# Example for Oxford Nanopore
+```bash
+mhass --amplicon-fasta test/amplicons.fa \
+      --amplicon-genome-labels test/labels.tsv \
+      --output-dir output_ont/ \
+      --num-samples 5 \
+      --num-reads 1000 \
+      --difference-ratio 39:24:36 \
+      --threads 4
+```
+
+
 
 ## Citation
 
