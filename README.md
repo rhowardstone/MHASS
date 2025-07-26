@@ -6,6 +6,8 @@ A complete pipeline for simulating PacBio HiFi amplicon sequencing data for micr
 
 ## Installation
 
+Note: Installation requires conda
+
 ```bash
 git clone https://github.com/rhowardstone/MHASS.git
 cd MHASS
