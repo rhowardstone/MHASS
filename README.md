@@ -197,6 +197,8 @@ mhass --amplicon-fasta test/amplicons.fa \
 ```
 
 
+For more usage information, please see our separate evaluation repository: https://github.com/rhowardstone/MHASS_evaluation
+
 
 ## Citation
 
