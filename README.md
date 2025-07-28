@@ -54,17 +54,21 @@ options:
   --num-reads NUM_READS
                         Number of reads per sample (default: 10000)
   --var-intercept VAR_INTERCEPT
-                        Intercept for ASV variability model (controls baseline variation between samples) (default: 1.47565981333483)
+                        Intercept for ASV variability model (controls baseline variation between samples)
+                            (default: 1.47565981333483)
   --var-slope VAR_SLOPE
-                        Slope for ASV variability model (how variation changes with abundance) (default: -0.909890963463704)
+                        Slope for ASV variability model (how variation changes with abundance)
+                            (default: -0.909890963463704)
   --genome-distribution GENOME_DISTRIBUTION
-                        Distribution for genome abundances (uniform, lognormal, powerlaw, or empirical:<file>) (default: uniform)
+                        Distribution for genome abundances (uniform, lognormal, powerlaw, or empirical:<file>)
+                            (default: uniform)
   --barcode-file BARCODE_FILE
                         TSV file with barcodes (id, forward, reverse) (default: None)
   --subread-accuracy SUBREAD_ACCURACY
                         Mean subread accuracy used in PBSIM (default: 0.65) (default: 0.65)
   --difference-ratio DIFFERENCE_RATIO
-                        Difference (error) ratio for PBSIM (substitution:insertion:deletion). Default 6:55:39 is for PacBio RS II. Use 22:45:33 for PacBio Sequel, 39:24:36 for ONT (default: 6:55:39)
+                        Difference (error) ratio for PBSIM (substitution:insertion:deletion).
+                            Default 6:55:39 is for PacBio RS II. Use 22:45:33 for PacBio Sequel, 39:24:36 for ONT (default: 6:55:39)
   --np-distribution-type {empirical,lognormal}
                         Type of np distribution: empirical (from file) or lognormal (default: empirical)
   --lognormal-mu LOGNORMAL_MU
