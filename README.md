@@ -26,6 +26,21 @@ Note: For generating the ASV FASTA file required for MHASS ('amplicons.fa', belo
 
 For an example script using AmpliconHunter in consort with MHASS, please refer to: https://github.com/rhowardstone/MHASS_evaluation
 
+### Simple test
+
+```bash
+mhass --amplicon-fasta Test-data_ATCC_16S_MSA-1003/amplicons.fa --amplicon-genome-labels Test-data_ATCC_16S_MSA-1003/amplicon_labels.txt \
+        --output-dir testout --barcode-file Test-data_ATCC_16S_MSA-1003/barcodes.tsv --np-distribution-type lognormal
+```
+This will produce a directory at ./testout, containing the output of the simulation: 
+
+* `counts.tsv`: Simulated ASV counts per sample
+* `counts_meta.tsv`: Sample library sizes
+* `sample_barcode_map.tsv`: Mapping of samples to barcodes
+* `sequence_file_mapping.tsv`: Detailed template mappings
+* `combined_reads.fastq`: Final output FASTQ file
+
+
 ### Basic Command
 
 ```bash
@@ -148,13 +163,7 @@ Genome1	0.45
 Genome2	0.30
 ```
 
-## Output Files
 
-* `counts.tsv`: Simulated ASV counts per sample
-* `counts_meta.tsv`: Sample library sizes
-* `sample_barcode_map.tsv`: Mapping of samples to barcodes
-* `sequence_file_mapping.tsv`: Detailed template mappings
-* `combined_reads.fastq`: Final output FASTQ file
 
 ## Workflow
 
