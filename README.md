@@ -29,8 +29,10 @@ For an example script using AmpliconHunter in consort with MHASS, please refer t
 ### Simple test
 
 ```bash
-mhass --amplicon-fasta Test-data_ATCC_16S_MSA-1003/amplicons.fa --amplicon-genome-labels Test-data_ATCC_16S_MSA-1003/amplicon_labels.txt \
-        --output-dir testout --barcode-file Test-data_ATCC_16S_MSA-1003/barcodes.tsv --np-distribution-type lognormal
+mhass --amplicon-fasta Test-data_ATCC_16S_MSA-1003/amplicons.fa \
+        --amplicon-genome-labels Test-data_ATCC_16S_MSA-1003/amplicon_labels.txt \
+        --barcode-file Test-data_ATCC_16S_MSA-1003/barcodes.tsv --np-distribution-type lognormal \
+        --output-dir testout 
 ```
 This will produce a directory at ./testout, containing the output of the simulation: 
 
