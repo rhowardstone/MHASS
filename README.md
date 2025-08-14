@@ -34,7 +34,7 @@ mhass --amplicon-fasta Test-data_ATCC_16S_MSA-1003/amplicons.fa \
         --barcode-file Test-data_ATCC_16S_MSA-1003/barcodes.tsv --np-distribution-type lognormal \
         --output-dir testout 
 ```
-This will produce a directory at ./testout, containing the output of the simulation: 
+This will produce a directory at `./testout`, containing the output of the simulation: 
 
 * `counts.tsv`: Simulated ASV counts per sample
 * `counts_meta.tsv`: Sample library sizes
