@@ -82,6 +82,7 @@ EOF
 fi
 
 log "Conda environment '$ENV_NAME' is ready."
+conda activate $ENV_NAME
 
 #=====================
 # Install metaSPARSim in the conda environment
@@ -346,11 +347,12 @@ cat > mhass/resources/np_distribution.tsv << 'EOF'
 EOF
 
 
-
 git clone https://github.com/rhowardstone/AmpliconHunter.git
 cd AmpliconHunter
 pip install -e .
 cd ../
+
+conda deactivate
 
 #=====================
 # Installation Complete
