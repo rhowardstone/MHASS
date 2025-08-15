@@ -72,6 +72,7 @@ dependencies:
   - pip
   - setuptools>=42
   - wheel
+  - git
 EOF
     
     # Create the conda environment
@@ -82,8 +83,6 @@ EOF
 fi
 
 log "Conda environment '$ENV_NAME' is ready."
-conda init
-conda activate $ENV_NAME
 
 #=====================
 # Install metaSPARSim in the conda environment
@@ -108,7 +107,7 @@ if (!requireNamespace("metaSPARSim", quietly = TRUE)) {
 '
 
 #=====================
-# Install the package
+# Install the mhass package in the conda environment
 #=====================
 log "Installing mhass package..."
 conda run -n $ENV_NAME pip install -e .
@@ -126,7 +125,7 @@ if [ -n "$PBSIM_PATH" ]; then
     cp "$PBSIM_PATH" mhass/resources/pbsim3/src/pbsim
     
     # Try to find QSHMM model
-    CONDA_ENV_PATH=$(dirname $(dirname "$PBSIM_PATH"))
+    CONDA_ENV_PATH=$(conda run -n $ENV_NAME python -c "import sys; print(sys.prefix)")
     QSHMM_PATHS=(
         "$CONDA_ENV_PATH/share/pbsim3/data/QSHMM-RSII.model"
         "$CONDA_ENV_PATH/lib/pbsim3/data/QSHMM-RSII.model"
@@ -163,6 +162,7 @@ else
     cd "$WORK_DIR"
     rm -rf "$temp_dir"
 fi
+
 
 #=====================
 # Create default resource files
@@ -348,12 +348,20 @@ cat > mhass/resources/np_distribution.tsv << 'EOF'
 EOF
 
 
-git clone https://github.com/rhowardstone/AmpliconHunter.git
-cd AmpliconHunter
-pip install -e .
-cd ../
+#=====================
+# Clone and install AmpliconHunter IN THE CONDA ENVIRONMENT
+#=====================
+log "Installing AmpliconHunter in the mhass conda environment..."
 
-conda deactivate
+# Clone AmpliconHunter
+if [ ! -d "AmpliconHunter" ]; then
+    git clone https://github.com/rhowardstone/AmpliconHunter.git
+fi
+
+# Install AmpliconHunter in the mhass environment
+cd AmpliconHunter
+conda run -n $ENV_NAME pip install -e .
+cd "$WORK_DIR"
 
 #=====================
 # Installation Complete
