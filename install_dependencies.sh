@@ -82,6 +82,7 @@ EOF
 fi
 
 log "Conda environment '$ENV_NAME' is ready."
+conda init
 conda activate $ENV_NAME
 
 #=====================
