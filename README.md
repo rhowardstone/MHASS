@@ -1,6 +1,7 @@
 # MHASS
 
 **Microbiome HiFi Amplicon Sequencing Simulator**
+[Preprint](https://arxiv.org/abs/2509.12428)
 
 A complete pipeline for simulating PacBio HiFi amplicon sequencing data for microbiome studies.
 
