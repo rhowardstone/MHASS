@@ -217,5 +217,6 @@ For more usage information, please see our separate evaluation repository: https
 
 
 ## Citation
+If our work is useful to you, please cite as: 
 
-TBD ?? please cite appropriately once the tool is published.
+Rye Howard-Stone, Ion I Măndoiu, MHASS: Microbiome HiFi Amplicon Sequencing Simulator, Bioinformatics, 2025;, btaf656, https://doi.org/10.1093/bioinformatics/btaf656
